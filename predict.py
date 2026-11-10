@@ -1,5 +1,6 @@
 import pickle
 from pathlib import Path
+from typing import Literal
 
 import xgboost as xgb
 from fastapi import FastAPI, HTTPException
@@ -14,6 +15,8 @@ with open(MODEL_FILE, "rb") as f_in:
 
 FEATURE_NAMES = list(dv.get_feature_names_out())
 
+DATA_UNTIL = snapshot["last_fight_date"].max().date().isoformat()
+
 app = FastAPI(title="UFC Fight Predictor")
 
 
@@ -22,8 +25,8 @@ class FightRequest(BaseModel):
     fighter_a: str
     fighter_b: str
     weight_class: str | None = None
-    is_title: int | None = None
-    scheduled_rounds: int | None = None
+    is_title: Literal[0, 1] | None = None
+    scheduled_rounds: Literal[3, 5] | None = None
 
 
 # 3. What the service returns
@@ -43,7 +46,7 @@ def predict_proba(row):
 
 @app.get("/health")
 def health():
-    return {"status": "ok"}
+    return {"status": "ok", "data_until": DATA_UNTIL}
 
 @app.get("/fighters")
 def fighters():

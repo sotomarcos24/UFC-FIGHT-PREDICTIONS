@@ -1,4 +1,5 @@
 import os
+from datetime import date
 
 import requests
 import streamlit as st
@@ -40,6 +41,12 @@ def load_fighters():
     resp.raise_for_status()
     return {f["FIGHTER"]: f for f in resp.json()}
 
+@st.cache_data(ttl=3600)
+def load_data_until():
+    resp = requests.get(f"{API_URL}/health", timeout=90)
+    resp.raise_for_status()
+    return resp.json().get("data_until")
+
 
 st.markdown('<div class="title">Fight <span>Predictor</span></div>', unsafe_allow_html=True)
 st.markdown('<p class="subtitle">Pick two UFC fighters and get the win probability of each one.</p>',
@@ -50,6 +57,16 @@ try:
 except requests.RequestException as e:
     st.error(f"Could not reach the prediction API at {API_URL}: {e}")
     st.stop()
+
+try:
+    data_until = load_data_until()
+except requests.RequestException:
+    data_until = None
+
+if data_until:
+    pretty = date.fromisoformat(data_until).strftime("%d %b %Y")
+    st.caption(f"📅 Fighter statistics include UFC fights up to **{pretty}**. "
+               "Fights after that date are not reflected in the predictions.")
 
 names = sorted(fighters)
 

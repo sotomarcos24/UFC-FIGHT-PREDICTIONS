@@ -39,6 +39,8 @@ It works for **scheduled fights** and for **hypothetical matchups** between figh
 | `ufc_fight_stats.csv` | Round-by-round statistics of each fighter |
 | `ufc_fighter_tott.csv` | Height, reach, stance and date of birth |
 
+The deployed model includes fights up to **31 Oct 2026** (date of the latest event in this data version). The API reports this date in `GET /health` (`data_until`), and the web interface displays it.
+
 The data is already committed in the repository. To download it again:
 
 ```bash
@@ -225,7 +227,7 @@ The service is then available at http://localhost:9696/docs.
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/health` | Health check |
+| `GET` | `/health` | Health check and data cutoff date |
 | `GET` | `/fighters` | List of fighters with their current and eligible weight classes |
 | `POST` | `/predict` | Win probabilities for a fight |
 
@@ -262,8 +264,8 @@ Errors:
 
 <!-- TODO: fill in after deploying -->
 
-- **API:** https://<api-url>/docs
-- **Web interface:** https://<app-url>
+- **Web interface:** https://ufc-fight-predictions.onrender.com
+- **API:** https://ufc-fight-predictions-model.onrender.com/docs
 
 Both are deployed on [Render](https://render.com) from this repository's `Dockerfile`. The interface uses the same image with a different start command and the `API_URL` environment variable pointing to the API.
 
