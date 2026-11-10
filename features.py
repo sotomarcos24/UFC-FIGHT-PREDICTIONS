@@ -35,6 +35,8 @@ EXTRA_EVENT_DATES = {"UFC - Road to UFC 4.6": "August 22, 2025"}
 def compute_ratios(df):
 
     mins = df["prev_total_time"] / 60
+    mins = mins.where(mins >= 5)
+
     df["slpm"]     = df["prev_sig_str_landed"] / mins
     df["sapm"]     = df["prev_sig_str_landed_opp"] / mins
     df["str_acc"]  = df["prev_sig_str_landed"] / df["prev_sig_str_attempted"]
@@ -220,6 +222,9 @@ def add_history_features(df, fighter_tott):
         fighter_tott[["FIGHTER", "height_cm", "reach_cm", "STANCE", "DOB"]],
         on="FIGHTER", how="left",
     )
+    
+    df["STANCE"] = df["STANCE"].fillna("Unknown")
+
     assert len(df) == n_before
 
     df["age"] = (df["DATE"] - df["DOB"]).dt.days / 365.25
