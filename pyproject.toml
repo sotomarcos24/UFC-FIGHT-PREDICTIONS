@@ -1,7 +1,7 @@
 [project]
 name = "ufc-fight-predictions"
 version = "0.1.0"
-description = "Add your description here"
+description = "UFC fight predictor"
 readme = "README.md"
 authors = [
     { name = "sotomarcos24", email = "sotomarcos24@gmail.com" }

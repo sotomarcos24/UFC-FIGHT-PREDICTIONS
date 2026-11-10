@@ -5,7 +5,7 @@ import xgboost as xgb
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 
-from features import build_matchup_features, matchup_warnings, build_fighter_snapshot
+from features import build_matchup_features, matchup_warnings
 
 # 1. Load the model once, when the service starts
 MODEL_FILE = Path(__file__).parent / "model.bin"
@@ -66,9 +66,9 @@ def predict(req: FightRequest):
         row_ab = build_matchup_features(snapshot, req.fighter_a, req.fighter_b, context)
         row_ba = build_matchup_features(snapshot, req.fighter_b, req.fighter_a, context)
     except KeyError as e:
-        raise HTTPException(status_code=404, detail=str(e))
+        raise HTTPException(status_code=404, detail=e.args[0])
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=400, detail=e.args[0])
 
     # Symmetric prediction: the order of the names does not matter
     p_ab = predict_proba(row_ab)          # P(A beats B)

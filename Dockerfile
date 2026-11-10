@@ -14,3 +14,6 @@ COPY features.py predict.py model.bin ./
 EXPOSE 9696
 
 CMD ["uv", "run", "uvicorn", "predict:app", "--host", "0.0.0.0", "--port", "9696"]
+
+COPY features.py predict.py app.py model.bin ./
+COPY .streamlit/ .streamlit/
