@@ -8,12 +8,10 @@ WORKDIR /app
 COPY pyproject.toml uv.lock .python-version ./
 RUN uv sync --locked --no-dev
 
-# 2. Application code and trained model
-COPY features.py predict.py model.bin ./
+# 2. Application code, web interface and trained model
+COPY features.py predict.py app.py model.bin ./
+COPY .streamlit/ .streamlit/
 
 EXPOSE 9696
 
 CMD ["uv", "run", "uvicorn", "predict:app", "--host", "0.0.0.0", "--port", "9696"]
-
-COPY features.py predict.py app.py model.bin ./
-COPY .streamlit/ .streamlit/
